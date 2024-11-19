@@ -1,6 +1,7 @@
 let gennew = 0;
 let score = 0;
 let blocked = 0;
+const animtime = 50;
 
 function getCell(i, j)
 {
@@ -25,12 +26,12 @@ function display_score()
 
 function game_over()
 {
-	console.log("GAME OVER");
+	document.getElementById("message").textContent = "GAME OVER";
 }
 
 function you_win()
 {
-	console.log("YOU WIN");
+	document.getElementById("message").textContent = "YOU WIN!";
 }
 
 function randomInt(n)
@@ -71,9 +72,6 @@ document.addEventListener("keydown", (ev)=>
 	{
 		if (blocked)
 			return ;
-		blocked = 1;
-		setTimeout(()=>{blocked = 0;}, 100);
-		let end;
 		let key = ev.key;
 		if (key == "ArrowUp")
 			move("up");
@@ -90,8 +88,8 @@ document.addEventListener("keydown", (ev)=>
 			generate_random();
 			gennew = 0;
 		}
-		paint_cells();
 		display_score();
+		setTimeout(()=>{blocked = 0;}, 3 * animtime);
 		end = check_end();
 		if (end == -1)
 			return game_over();
@@ -100,16 +98,40 @@ document.addEventListener("keydown", (ev)=>
 	}
 );
 
+function createAnimation(src, dst)
+{
+	let translation = "translate";
+	let coordsrc = [parseInt(src.id.substring(0,1)), parseInt(src.id.substring(2,3))];
+	let coorddst = [parseInt(dst.id.substring(0,1)), parseInt(dst.id.substring(2,3))];
+	if (coordsrc[0] == coorddst[0])
+		translation += "X(" + ((coorddst[1] - coordsrc[1]) * 12.05) + "vh)";
+	else if (coordsrc[1] == coorddst[1])
+		translation += "Y(" + ((coorddst[0] - coordsrc[0]) * 12.50) + "vh)";
+	else
+		return ;
+	src.style.transform = translation;
+	src.style.transition = "transform "+ (animtime / 1000) +"s ease";
+	setTimeout(()=>{
+		paint_cells();
+		src.style.transform = "";
+		src.style.transition = "";
+	}, animtime)
+}
+
 function merge_array(array)
 {
+	let next;
 	for (let i = 0; i < 3; i++)
 	{
-		if (array[i].getAttribute("data-value") != "0" && array[i].getAttribute("data-value") == array[i + 1].getAttribute("data-value"))
+		next = array[i + 1];
+		if (array[i].getAttribute("data-value") != "0" && array[i].getAttribute("data-value") == next.getAttribute("data-value"))
 		{
+			blocked = 1;
 			gennew = 1;
+			createAnimation(next, array[i]);
 			array[i].setAttribute("data-value", parseInt(array[i].getAttribute("data-value")) + 1);
 			score += Math.pow(2, parseInt(array[i].getAttribute("data-value")));
-			array[i + 1].setAttribute("data-value", 0);
+			next.setAttribute("data-value", 0);
 		}
 	}
 }
@@ -123,7 +145,9 @@ function move_array(array)
 			for (let j = i + 1; j < 4; j++)
 				if (array[j].getAttribute("data-value") != "0")
 				{
+					blocked = 1;
 					gennew = 1;
+					createAnimation(array[j], array[i]);
 					array[i].setAttribute("data-value", array[j].getAttribute("data-value"));
 					array[j].setAttribute("data-value", "0");
 					break;

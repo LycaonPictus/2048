@@ -12,9 +12,15 @@ function paint_cells()
 			elem = getCell(i, j);
 			exp = parseInt(elem.getAttribute("data-value"));
 			if (exp < 1)
+			{
 				elem.textContent = "";
+				elem.style.opacity = 0;
+			}
 			else
+			{
 				elem.textContent = Math.pow(2, exp);
+				elem.style.opacity = 1;
+			}
 			elem.style.backgroundColor = colors[exp];
 		}
 }
@@ -24,6 +30,7 @@ function init_game()
 	for (let i = 0; i < 4; i++)
 		for (let j = 0; j < 4; j++)
 			setValue(i, j, 0);
+	score = 0;
 	generate_random();
 	generate_random();
 	paint_cells();

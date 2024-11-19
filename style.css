@@ -1,4 +1,4 @@
-#grid
+.grid
 {
 	height: 50vh;
 	width: 50vh;
@@ -24,6 +24,12 @@
 	font-size: 200%;
 }
 
+#message
+{
+	padding: 5vh;
+	font-size:xx-large
+}
+
 .cell
 {
 	height: 20%;
@@ -35,8 +41,6 @@
 	align-items: center;
 	font-size: 150%;
 	background-color: "rgba(238, 228, 218, 0.35)";
-	transition-duration: 0.1s;
-	transition-property: top;
 }
 
 #reset
