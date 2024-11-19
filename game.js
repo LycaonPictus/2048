@@ -1,3 +1,7 @@
+let gennew = 0;
+let score = 0;
+let blocked = 0;
+
 function getCell(i, j)
 {
 	return (document.getElementById(i + "-" + j))
@@ -13,8 +17,6 @@ function setValue(i, j, v)
 	return getCell(i,j).setAttribute("data-value", v);
 }
 
-let gennew = 0;
-let score = 0;
 
 function display_score()
 {
@@ -62,11 +64,15 @@ function check_end()
 		for (let j = 0; j < 4; j++)
 			if (getValue(i, j) == 0 || (i < 3 && getValue(i, j) == getValue(i + 1, j)) || (j < 3 && getValue(i, j) == getValue(i, j + 1)))
 				return 0;
-	return -1;	
+	return -1;
 }
 
 document.addEventListener("keydown", (ev)=>
 	{
+		if (blocked)
+			return ;
+		blocked = 1;
+		setTimeout(()=>{blocked = 0;}, 100);
 		let end;
 		let key = ev.key;
 		if (key == "ArrowUp")
